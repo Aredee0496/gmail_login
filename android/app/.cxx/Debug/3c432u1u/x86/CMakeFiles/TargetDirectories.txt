@@ -1,0 +1,2 @@
+D:/gmail/android/app/.cxx/Debug/3c432u1u/x86/CMakeFiles/edit_cache.dir
+D:/gmail/android/app/.cxx/Debug/3c432u1u/x86/CMakeFiles/rebuild_cache.dir

@@ -1,0 +1,21 @@
+flavors:
+  dev:
+    app_name: "SSJ Dev"
+    android:
+      applicationId: "com.ssj.dev"
+    ios:
+      bundleId: "com.ssj.dev"
+
+  staging:
+    app_name: "SSJ Staging"
+    android:
+      applicationId: "com.ssj.staging"
+    ios:
+      bundleId: "com.ssj.staging"
+
+  prod:
+    app_name: "SSJ"
+    android:
+      applicationId: "com.ssj"
+    ios:
+      bundleId: "com.ssj"
