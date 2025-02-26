@@ -23,7 +23,7 @@ dependencies {
 }
 
 android {
-    namespace = "com.example.gmail"
+    namespace  "com.example.gmail"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 

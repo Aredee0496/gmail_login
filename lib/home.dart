@@ -4,9 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gmail/service/app-service.dart';
 import 'package:gmail/widget/AdminControls.dart';
-import 'package:google_sign_in/google_sign_in.dart';
+import 'package:gmail/widget/footerbar.dart';
+import 'package:gmail/widget/menu_drawer.dart';
+import 'package:gmail/widget/user_info.dart';
 import 'package:provider/provider.dart';
-import 'login_screen.dart';
 import './service/group-service.dart';
 import 'model/group-model.dart';
 import '../providers/role_provider.dart';
@@ -165,16 +166,6 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  Future<void> logout() async {
-    await _auth.signOut();
-    await GoogleSignIn().signOut();
-    await AppService().Logout(accessToken!);
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => LoginScreen()),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     User? user = _auth.currentUser;
@@ -183,16 +174,17 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text("หน้าหลัก", style: TextStyle(color: Colors.white)),
+        centerTitle: true,
         backgroundColor: Colors.deepPurple,
         iconTheme: IconThemeData(color: Colors.white),
       ),
-      drawer: _buildDrawer(user),
+      drawer: MenuDrawer(user: user),
       body: Stack(
         children: [
           SingleChildScrollView(
             child: Column(
               children: [
-                _buildUserInfo(user),
+                UserInformation(user: user),
                 if (isLoading)
                   CircularProgressIndicator()
                 else
@@ -207,65 +199,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 toggleSelectMode: toggleSelectMode),
         ],
       ),
-    );
-  }
-
-  Widget _buildDrawer(User? user) {
-    return Drawer(
-      child: ListView(
-        padding: EdgeInsets.zero,
-        children: [
-          UserAccountsDrawerHeader(
-            accountName: Text(user?.displayName ?? 'ไม่พบชื่อผู้ใช้'),
-            accountEmail: Text(user?.email ?? 'ไม่พบอีเมล'),
-            currentAccountPicture: CircleAvatar(
-              backgroundImage: NetworkImage(user?.photoURL ??
-                  'https://www.example.com/default-avatar.png'),
-            ),
-          ),
-          ListTile(
-            leading: Icon(Icons.logout),
-            title: Text('Logout'),
-            onTap: () {
-              logout();
-            },
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildUserInfo(User? user) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Card(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        elevation: 5,
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Row(
-            children: [
-              CircleAvatar(
-                radius: 30,
-                backgroundImage: NetworkImage(user?.photoURL?.isNotEmpty == true
-                    ? user!.photoURL!
-                    : 'https://via.placeholder.com/150'),
-              ),
-              SizedBox(width: 16),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(user?.displayName ?? 'ชื่อผู้ใช้ไม่พบ',
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                  Text(user?.email ?? 'อีเมลไม่พบ',
-                      style: TextStyle(fontSize: 14, color: Colors.grey)),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
+      bottomNavigationBar: FooterBar(), 
     );
   }
 

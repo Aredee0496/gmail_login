@@ -2,7 +2,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:gmail/config/env.dart';
 import 'package:gmail/config/flavor_config.dart';
 import 'package:gmail/firebase_options.dart';
 import 'package:gmail/landing.dart';
@@ -22,7 +21,6 @@ Future _firebaseBackgroundMessage(RemoteMessage message) async {
 
 void main() async {
   FlavorConfig.init(env: "dev");
-  print("gsshgdhfdsgh $URL_API_FAMILY");
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await PushNotifications.init();
