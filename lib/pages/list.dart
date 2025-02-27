@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'detail.dart';
+import '../widget/detail.dart';
 
 class ListScreen extends StatefulWidget {
   @override

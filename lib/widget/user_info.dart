@@ -1,42 +1,44 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-class UserInformation  extends StatelessWidget {
+class UserInformation extends StatelessWidget {
   final User? user;
 
-  const UserInformation ({super.key, this.user});
+  const UserInformation({super.key, this.user});
 
   @override
   Widget build(BuildContext context) {
-   return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Card(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        elevation: 5,
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Row(
+    return Padding(
+      padding: const EdgeInsets.only(
+          top: 32.0, left: 16.0, right: 16.0, bottom: 16.0),
+      child: Row(
+        children: [
+          GestureDetector(
+            onTap: () {
+              Scaffold.of(context).openDrawer();
+            },
+            child: CircleAvatar(
+              radius: 25,
+              backgroundImage: user?.photoURL?.isNotEmpty == true
+                  ? NetworkImage(user!.photoURL!)
+                  : AssetImage('assets/avatar.jpg')
+                      as ImageProvider,
+            ),
+          ),
+          SizedBox(width: 16),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              CircleAvatar(
-                radius: 30,
-                backgroundImage: NetworkImage(user?.photoURL?.isNotEmpty == true
-                    ? user!.photoURL!
-                    : 'https://via.placeholder.com/150'),
-              ),
-              SizedBox(width: 16),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(user?.displayName ?? 'ชื่อผู้ใช้ไม่พบ',
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                  Text(user?.email ?? 'อีเมลไม่พบ',
-                      style: TextStyle(fontSize: 14, color: Colors.grey)),
-                ],
-              ),
+              Text(user?.displayName ?? 'ไม่พบชื่อผู้ใช้',
+                  style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white)),
+              Text(user?.email ?? 'อีเมลไม่พบ',
+                  style: TextStyle(fontSize: 14, color: Colors.white)),
             ],
           ),
-        ),
+        ],
       ),
     );
   }

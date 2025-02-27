@@ -10,14 +10,14 @@ class GroupService {
 
   Future<GroupData> fetchGroups(String firebaseToken) async {
     try {
-      String loginType = user!.providerData.isNotEmpty ? user!.providerData[0].providerId : "unknown";
+      // String loginType = user!.providerData.isNotEmpty ? user!.providerData[0].providerId : "unknown";
       final url = Uri.https(URL_API_APP, "$VERSION_API_APP/sylogin/newauth");
       final headers = {"Content-Type": "application/json"};
       final body = {
-        'UserName': user!.displayName,
-        'Email': user!.email,
-        'Token': firebaseToken,
-        'LoginType': loginType,
+        'UserName': "Rusdee B",
+        'Email': 'rbillatah@gmail.com',
+        // 'Token': firebaseToken,
+        // 'LoginType': loginType,
       };
 
       final response =

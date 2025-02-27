@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:gmail/home.dart';
-import 'package:gmail/login_screen.dart';
+import 'package:gmail/pages/home.dart';
+import 'package:gmail/pages/login_screen.dart';
 import 'package:gmail/notilist.dart';
 
 myRoutes(BuildContext context) {

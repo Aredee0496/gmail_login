@@ -14,11 +14,18 @@ class _LandingScreenState extends State<LandingScreen> {
   @override
   void initState() {
     super.initState();
-    _authenticateUser();
+    _checkAndAuthenticate();
   }
 
-  Future<void> _authenticateUser() async {
+  Future<void> _checkAndAuthenticate() async {
     try {
+      bool canAuthenticate = await auth.canCheckBiometrics || await auth.isDeviceSupported();
+      
+      if (!canAuthenticate) {
+        _navigateToApp();
+        return;
+      }
+
       bool isAuthenticated = await auth.authenticate(
         localizedReason: 'กรุณายืนยันตัวตนด้วยลายนิ้วมือ / Face ID หรือ PIN',
         options: AuthenticationOptions(
@@ -29,16 +36,21 @@ class _LandingScreenState extends State<LandingScreen> {
       );
 
       if (isAuthenticated) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => AuthWrapper()),
-        );
+        _navigateToApp();
       } else {
-        Future.delayed(Duration(seconds: 3), _authenticateUser);
+        Future.delayed(Duration(seconds: 3), _checkAndAuthenticate);
       }
     } catch (e) {
       print("เกิดข้อผิดพลาด: $e");
+      _navigateToApp();
     }
+  }
+
+  void _navigateToApp() {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => AuthWrapper()),
+    );
   }
 
   @override

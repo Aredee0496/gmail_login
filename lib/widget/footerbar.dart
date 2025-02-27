@@ -1,44 +1,67 @@
 import 'package:flutter/material.dart';
+import 'package:gmail/pages/detail_activity.dart';
+import 'package:gmail/pages/gen_qr.dart';
 import 'package:gmail/widget/qr_code_scanner.dart';
 
 class FooterBar extends StatelessWidget {
-  const FooterBar({Key? key}) : super(key: key);
+  final Widget? adminControls;
+
+  const FooterBar({Key? key, this.adminControls}) : super(key: key);
 
   void _scanQRCode(BuildContext context) {
-    print("Scanning QR Code...");
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => const QRViewExample()),
+      // MaterialPageRoute(builder: (context) => const QRViewExample()),
+      MaterialPageRoute(builder: (context) => const DetailActivity()),
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return BottomAppBar(
-      color: Colors.grey.shade100,
-      height: 60.0,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(bottom: 2.0), 
-            child: Transform.scale(
-              scale: 1.6, 
-              child: FloatingActionButton(
-                onPressed: () => _scanQRCode(context),
-                backgroundColor: Colors.deepPurple,
-                elevation: 6,
-                shape: const CircleBorder(),
-                child: const Icon(
-                  Icons.qr_code_scanner,
-                  color: Colors.white,
-                  size: 20,
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
+  void _openGenQRPage(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const GenQRPage()),
     );
   }
+
+ @override
+Widget build(BuildContext context) {
+    return BottomAppBar(
+        color: Colors.grey.shade100,
+        height: 70.0,
+        child: Row(
+            children: [
+              if (adminControls != null)
+               Expanded(
+                child: IconButton(
+                    icon: const Icon(Icons.qr_code, color: Colors.deepPurple),
+                    onPressed: () => _openGenQRPage(context),
+                ),
+               ),
+                Expanded(
+                    child: Align(
+                        alignment: Alignment.center,
+                        child: Material(
+                            elevation: 8,
+                            shape: const CircleBorder(),
+                            child: SizedBox(
+                                width: 80,
+                                height: 80,
+                                child: FloatingActionButton(
+                                    onPressed: () => _scanQRCode(context),
+                                    backgroundColor: Colors.deepPurple,
+                                    child: const Icon(Icons.qr_code_scanner,
+                                        color: Colors.white, size: 40),
+                                ),
+                            ),
+                        ),
+                    ),
+                ),
+                if (adminControls != null)
+                    Expanded(
+                        child: adminControls!,
+                    ),
+            ],
+        ),
+    );
+}
 }

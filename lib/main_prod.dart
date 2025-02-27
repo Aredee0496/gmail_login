@@ -3,7 +3,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:gmail/firebase_options.dart';
-import 'package:gmail/landing.dart';
+import 'package:gmail/pages/landing.dart';
 import 'package:gmail/notifications-service.dart';
 import 'package:gmail/providers/role_provider.dart';
 import 'package:provider/provider.dart';
