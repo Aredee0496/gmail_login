@@ -2,6 +2,8 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:gmail/pages/list.dart';
+import 'package:gmail/providers/group_provider.dart' as group_provider;
 import 'package:gmail/service/app-service.dart';
 import 'package:gmail/widget/AdminControls.dart';
 import 'package:gmail/widget/menu_drawer.dart';
@@ -50,6 +52,36 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  void fetchGroupData() async {
+    try {
+      String? firebaseToken = await getFirebaseToken();
+      GroupData groupData = await GroupService().fetchGroups(firebaseToken!);
+      accessToken = groupData.data.accesstoken;
+      setState(() {
+        groupList = groupData.data.group.rows
+            .map((row) => {
+                  "id": row.groupId,
+                  "name": row.groupName,
+                  "hasNotification": true,
+                })
+            .toList();
+
+        Provider.of<group_provider.GroupProvider>(context, listen: false)
+            .setGroups(groupList.cast<group_provider.Group>());
+        Provider.of<RoleProvider>(context, listen: false)
+            .setAccessToken(accessToken!);
+        Provider.of<RoleProvider>(context, listen: false)
+            .setRole(groupData.data.admin);
+        isLoading = false;
+      });
+    } catch (e) {
+      print("Error fetching groups: $e");
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
   Future<void> setupNotifications() async {
     print("✅ setupNotifications() called");
 
@@ -63,11 +95,15 @@ class _HomeScreenState extends State<HomeScreen> {
             groupName.split(",").map((e) => e.trim()).toList();
         setState(() {
           for (var group in groupList) {
+            print("Group Names: $groupNames");
+            print("Group Name: ${group["name"]}");
             if (groupNames.contains(group["name"])) {
               print("✅ Match found! Updating ${group["name"]}");
               group["hasNotification"] = true;
             }
           }
+          print(
+              "Updated groupList (in setupNotifications): $groupList"); // เพิ่ม print
         });
         print("📢 Updated groupList: $groupList");
 
@@ -83,47 +119,15 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  void fetchGroupData() async {
-    try {
-      String? firebaseToken = await getFirebaseToken();
-      GroupData groupData = await GroupService().fetchGroups(firebaseToken!);
-
-      setState(() {
-        groupList = groupData.data.group.rows
-            .map((row) => {
-                  "id": row.groupId,
-                  "name": row.groupName,
-                  "hasNotification": false,
-                })
-            .toList();
-
-        accessToken = groupData.data.accesstoken;
-        Provider.of<RoleProvider>(context, listen: false)
-            .setAccessToken(accessToken!);
-        Provider.of<RoleProvider>(context, listen: false)
-            .setRole(groupData.data.admin);
-        isLoading = false;
-      });
-    } catch (e) {
-      print("Error fetching groups: $e");
-      setState(() {
-        isLoading = false;
-      });
-    }
-  }
-
   void toggleAddMode() {
-    addMode = !addMode;
-    if (addMode) {
-      GroupDialog.showAddGroupDialog(context, (groupName) async {
-        if (accessToken != null) {
-          await GroupService().addGroup(groupName, accessToken!);
-          fetchGroupData();
-        } else {
-          print("Error: AccessToken is null");
-        }
-      });
-    }
+    GroupDialog.showAddGroupDialog(context, (groupName) async {
+      if (accessToken != null) {
+        await GroupService().addGroup(groupName, accessToken!);
+        fetchGroupData();
+      } else {
+        print("Error: AccessToken is null");
+      }
+    });
   }
 
   void toggleDeleteMode() {
@@ -135,15 +139,19 @@ class _HomeScreenState extends State<HomeScreen> {
   void toggleSelectMode() {
     setState(() {
       selectMode = !selectMode;
+      if (!selectMode) {
+        _sendSelectedGroups();
+        selectedGroups.clear();
+      }
     });
   }
 
   void _sendSelectedGroups() async {
     if (selectedGroups.isNotEmpty) {
-      await AppService().Notification(accessToken!, selectedGroups.join(","));
+      String groupNames = selectedGroups.join(", ");
+      await AppService().Notification(accessToken!, groupNames);
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-            content: Text('ส่ง noti : ${selectedGroups.join(", ")} ไปแล้ว')),
+        SnackBar(content: Text('ส่ง noti : $groupNames ไปแล้ว')),
       );
     }
   }
@@ -163,6 +171,16 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     User? user = _auth.currentUser;
+
+    if (groupList.isNotEmpty) {
+      print("Updated groupList (in build): $groupList");
+      print("--- Group Notification Status ---");
+      for (var group in groupList) {
+        print(
+            "${group["name"]}: hasNotification = ${group["hasNotification"]}");
+      }
+      print("--------------------------------");
+    }
 
     return Scaffold(
       extendBodyBehindAppBar: true,
@@ -196,6 +214,21 @@ class _HomeScreenState extends State<HomeScreen> {
                       deleteMode: deleteMode,
                       onGroupSelect: (groupName) {
                         setState(() {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  ListScreen(groupName: groupName),
+                            ),
+                          );
+                        });
+                      },
+                      onGroupDelete: (groupId) {
+                        deleteGroup(groupId);
+                      },
+                      onSendSelectedGroups: (groupName) {
+                        setState(() {
+                          _sendSelectedGroups;
                           if (selectedGroups.contains(groupName)) {
                             selectedGroups.remove(groupName);
                           } else {
@@ -203,27 +236,26 @@ class _HomeScreenState extends State<HomeScreen> {
                           }
                         });
                       },
-                      onGroupDelete: (groupId) {
-                        deleteGroup(groupId);
-                      },
-                      onSendSelectedGroups: _sendSelectedGroups,
                     ),
                 ],
               ),
             ),
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Consumer<RoleProvider>(
+                builder: (context, roleProvider, child) {
+                  return FooterBar(
+                    adminControls: roleProvider.isAdmin ? child : null,
+                  );
+                },
+                child: AdminControls(
+                  toggleAddMode: toggleAddMode,
+                  toggleDeleteMode: toggleDeleteMode,
+                  toggleSelectMode: toggleSelectMode,
+                ),
+              ),
+            ),
           ],
-        ),
-      ),
-      bottomNavigationBar: Consumer<RoleProvider>(
-        builder: (context, roleProvider, child) {
-          return FooterBar(
-            adminControls: roleProvider.isAdmin ? child : null,
-          );
-        },
-        child: AdminControls(
-          toggleAddMode: toggleAddMode,
-          toggleDeleteMode: toggleDeleteMode,
-          toggleSelectMode: toggleSelectMode,
         ),
       ),
     );

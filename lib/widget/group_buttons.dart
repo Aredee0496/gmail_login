@@ -9,7 +9,7 @@ class GroupButtonsWidget extends StatelessWidget {
   final bool deleteMode;
   final Function(String) onGroupSelect;
   final Function(String) onGroupDelete;
-  final VoidCallback onSendSelectedGroups;
+  final Function(String) onSendSelectedGroups;
 
   const GroupButtonsWidget({
     required this.groupList,
@@ -47,7 +47,6 @@ class GroupButtonsWidget extends StatelessWidget {
             children: groupList.map((group) {
               String groupName = group["name"]!;
               bool isSelected = selectedGroups.contains(groupName);
-              Color buttonColor = Colors.white;
 
               return GestureDetector(
                 onTap: () => onGroupSelect(groupName),
@@ -57,7 +56,7 @@ class GroupButtonsWidget extends StatelessWidget {
                   duration: const Duration(milliseconds: 300),
                   curve: Curves.easeInOut,
                   decoration: BoxDecoration(
-                    color: buttonColor,
+                    color: Colors.white,
                     borderRadius: BorderRadius.circular(16),
                     boxShadow: [
                       BoxShadow(
@@ -72,7 +71,6 @@ class GroupButtonsWidget extends StatelessWidget {
                     children: [
                       Center(
                         child: FittedBox(
-                          fit: BoxFit.scaleDown,
                           child: Text(
                             groupName,
                             style: const TextStyle(
@@ -80,6 +78,8 @@ class GroupButtonsWidget extends StatelessWidget {
                               color: Colors.deepPurple,
                               fontSize: 30,
                             ),
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
                           ),
                         ),
                       ),
@@ -115,8 +115,7 @@ class GroupButtonsWidget extends StatelessWidget {
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: MaterialButton(
-                              onPressed: () => onGroupSelect(
-                                  groupName),
+                              onPressed: () => onSendSelectedGroups(groupName),
                               color: isSelected ? Colors.green : Colors.grey,
                               textColor: Colors.white,
                               minWidth: double.infinity,
@@ -124,9 +123,7 @@ class GroupButtonsWidget extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               child: Text(
-                                isSelected
-                                    ? "เลือกแล้ว"
-                                    : "เลือก",
+                                isSelected ? "เลือกแล้ว" : "เลือก",
                                 style: const TextStyle(
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -136,12 +133,13 @@ class GroupButtonsWidget extends StatelessWidget {
                         ),
                       if (group["hasNotification"] == true)
                         Positioned(
+                          right: -5,
+                          top: -5, 
                           child: badges.Badge(
                             badgeStyle: const badges.BadgeStyle(
                               badgeColor: Colors.red,
-                              padding: EdgeInsets.all(6),
+                              padding: EdgeInsets.all(10),
                             ),
-                            child: const SizedBox(width: 20, height: 20),
                           ),
                         ),
                     ],

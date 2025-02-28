@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import '../widget/detail.dart';
 
 class ListScreen extends StatefulWidget {
+  final String groupName;
+
+  ListScreen({required this.groupName}); 
+
   @override
   _ListScreenState createState() => _ListScreenState();
 }
@@ -9,32 +13,34 @@ class ListScreen extends StatefulWidget {
 class _ListScreenState extends State<ListScreen> {
   List<bool> isReadList = [];
 
-  final List<Map<String, String>> mockData = [
-    {
-      "title": "แจ้งเตือน1",
-      "content": "123456",
-      "noti_date": "2025-02-17",
-      "created_by": "dee"
-    },
-    {
-      "title": "แจ้งเตือน2",
-      "content": "789456",
-      "noti_date": "2025-02-18",
-      "created_by": "ดี้"
-    },
-    {
-      "title": "แจ้งเตือน3",
-      "content": "123456789",
-      "noti_date": "2025-02-19",
-      "created_by": "ดี้"
-    },
-  ];
+  late List<Map<String, String>> mockData;
 
   @override
   void initState() {
     super.initState();
+    mockData = [
+      {
+        "title": "แจ้งเตื่อน 1",
+        "content": "123456",
+        "noti_date": "2025-02-17",
+        "created_by": "dee"
+      },
+      {
+        "title": "แจ้งเตื่อน 2",
+        "content": "123456",
+        "noti_date": "2025-02-17",
+        "created_by": "dee"
+      },
+      {
+        "title": "แจ้งเตื่อน 3",
+        "content": "123456",
+        "noti_date": "2025-02-17",
+        "created_by": "dee"
+      }
+    ];
     isReadList = List.generate(mockData.length, (index) => false);
   }
+
 
   void _markAsRead(int index) {
     setState(() {
@@ -46,7 +52,7 @@ class _ListScreenState extends State<ListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("รายการแจ้งเตือน"),
+        title: Text(widget.groupName),
         backgroundColor: Colors.deepPurple,
         foregroundColor: Colors.white,
         elevation: 4,

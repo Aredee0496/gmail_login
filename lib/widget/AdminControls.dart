@@ -28,7 +28,7 @@ class _AdminControlsState extends State<AdminControls>
     );
   }
 
-   void toggleMenu() {
+  void toggleMenu() {
     if (isMenuOpen) {
       _overlayEntry.remove();
     } else {
@@ -42,44 +42,54 @@ class _AdminControlsState extends State<AdminControls>
 
   OverlayEntry _createOverlayEntry() {
     return OverlayEntry(
-      builder: (context) => Positioned(
-        bottom: 80,
-        right: 20,
-        child: Material(
-          color: Colors.transparent,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              _buildActionButton(Icons.check, "แจ้งเตือน", widget.toggleSelectMode),
-              _buildActionButton(Icons.delete, "ลบ", widget.toggleDeleteMode),
-              _buildActionButton(Icons.add, "เพิ่ม", widget.toggleAddMode),
-            ],
+      builder: (context) => TweenAnimationBuilder(
+        duration: const Duration(milliseconds: 300),
+        tween: Tween<double>(begin: isMenuOpen ? 0.0 : 1.0, end: isMenuOpen ? 1.0 : 0.0),
+        builder: (BuildContext context, double value, Widget? child) {
+          return Positioned(
+            bottom: 90 * value,
+            right: 20,
+            child: Opacity(
+              opacity: value,
+              child: Material(
+                color: Colors.transparent,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    _buildActionButton(Icons.check, "แจ้งเตือน", widget.toggleSelectMode),
+                    _buildActionButton(Icons.delete, "ลบ", widget.toggleDeleteMode),
+                    _buildActionButton(Icons.add, "เพิ่ม", widget.toggleAddMode),
+                  ],
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildActionButton(
+      IconData icon, String tooltip, VoidCallback onPressed) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10),
+      child: Opacity(
+        opacity: 0.8,
+        child: CircleAvatar(
+          backgroundColor: Colors.grey.withOpacity(0.8),
+          radius: 24,
+          child: IconButton(
+            icon: Icon(icon, size: 20, color: Colors.white),
+            onPressed: () {
+              onPressed();
+              toggleMenu();
+            },
+            tooltip: tooltip,
           ),
         ),
       ),
     );
   }
-
-Widget _buildActionButton(IconData icon, String tooltip, VoidCallback onPressed) {
-  return Padding(
-    padding: const EdgeInsets.symmetric(vertical: 10),
-    child: Opacity(
-      opacity: 0.8,
-      child: CircleAvatar(
-        backgroundColor: Colors.grey.withOpacity(0.8), 
-        radius: 24, 
-        child: IconButton(
-          icon: Icon(icon, size: 20, color: Colors.white), 
-          onPressed: () {
-            onPressed();
-            toggleMenu();
-          },
-          tooltip: tooltip,
-        ),
-      ),
-    ),
-  );
-}
 
   @override
   Widget build(BuildContext context) {
@@ -88,5 +98,4 @@ Widget _buildActionButton(IconData icon, String tooltip, VoidCallback onPressed)
       onPressed: toggleMenu,
     );
   }
-
 }
