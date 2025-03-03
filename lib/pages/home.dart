@@ -6,6 +6,7 @@ import 'package:gmail/pages/list.dart';
 import 'package:gmail/providers/group_provider.dart' as group_provider;
 import 'package:gmail/service/app-service.dart';
 import 'package:gmail/widget/AdminControls.dart';
+import 'package:gmail/widget/background.dart';
 import 'package:gmail/widget/menu_drawer.dart';
 import 'package:provider/provider.dart';
 import '../../providers/role_provider.dart';
@@ -157,102 +158,83 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void deleteGroup(String groupId) async {
-    try {
-      await GroupService().deleteGroup(accessToken!, groupId);
-      setState(() {
-        groupList.removeWhere((group) => group["id"] == groupId);
-        deleteMode = false;
-      });
-    } catch (e) {
-      print("Error deleting group: $e");
-    }
+    GroupDialog.showDeleteConfirmationDialog(context, groupId, (groupId) async {
+      try {
+        await GroupService().deleteGroup(accessToken!, groupId);
+        setState(() {
+          groupList.removeWhere((group) => group["id"] == groupId);
+          deleteMode = false;
+        });
+      } catch (e) {
+        print("Error deleting group: $e");
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     User? user = _auth.currentUser;
-
-    if (groupList.isNotEmpty) {
-      print("Updated groupList (in build): $groupList");
-      print("--- Group Notification Status ---");
-      for (var group in groupList) {
-        print(
-            "${group["name"]}: hasNotification = ${group["hasNotification"]}");
-      }
-      print("--------------------------------");
-    }
-
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: null,
       drawer: MenuDrawer(user: user),
       body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              Colors.deepPurple,
-              Colors.white,
-            ],
-          ),
-        ),
-        child: Stack(
+        decoration: Background(),
+        child: Column(
           children: [
-            SingleChildScrollView(
-              child: Column(
-                children: [
-                  UserInformation(user: user),
-                  if (isLoading)
-                    const CircularProgressIndicator()
-                  else
-                    GroupButtonsWidget(
-                      groupList: groupList,
-                      selectedGroups: selectedGroups,
-                      notificationGroups: notificationGroups,
-                      selectMode: selectMode,
-                      deleteMode: deleteMode,
-                      onGroupSelect: (groupName) {
-                        setState(() {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  ListScreen(groupName: groupName),
-                            ),
-                          );
-                        });
-                      },
-                      onGroupDelete: (groupId) {
-                        deleteGroup(groupId);
-                      },
-                      onSendSelectedGroups: (groupName) {
-                        setState(() {
-                          _sendSelectedGroups;
-                          if (selectedGroups.contains(groupName)) {
-                            selectedGroups.remove(groupName);
-                          } else {
-                            selectedGroups.add(groupName);
-                          }
-                        });
-                      },
-                    ),
-                ],
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    UserInformation(user: user),
+                    if (isLoading)
+                      const CircularProgressIndicator()
+                    else
+                      GroupButtonsWidget(
+                        groupList: groupList,
+                        selectedGroups: selectedGroups,
+                        notificationGroups: notificationGroups,
+                        selectMode: selectMode,
+                        deleteMode: deleteMode,
+                        onGroupSelect: (groupName) {
+                          setState(() {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    ListScreen(groupName: groupName),
+                              ),
+                            );
+                          });
+                        },
+                        onGroupDelete: (groupId) {
+                          deleteGroup(groupId);
+                        },
+                        onSendSelectedGroups: (groupName) {
+                          setState(() {
+                            _sendSelectedGroups;
+                            if (selectedGroups.contains(groupName)) {
+                              selectedGroups.remove(groupName);
+                            } else {
+                              selectedGroups.add(groupName);
+                            }
+                          });
+                        },
+                      ),
+                  ],
+                ),
               ),
             ),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Consumer<RoleProvider>(
-                builder: (context, roleProvider, child) {
-                  return FooterBar(
-                    adminControls: roleProvider.isAdmin ? child : null,
-                  );
-                },
-                child: AdminControls(
-                  toggleAddMode: toggleAddMode,
-                  toggleDeleteMode: toggleDeleteMode,
-                  toggleSelectMode: toggleSelectMode,
-                ),
+            Consumer<RoleProvider>(
+              builder: (context, roleProvider, child) {
+                return FooterBar(
+                  adminControls: roleProvider.isAdmin ? child : null,
+                );
+              },
+              child: AdminControls(
+                toggleAddMode: toggleAddMode,
+                toggleDeleteMode: toggleDeleteMode,
+                toggleSelectMode: toggleSelectMode,
               ),
             ),
           ],

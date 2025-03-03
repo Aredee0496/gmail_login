@@ -8,6 +8,7 @@ class GroupDialog {
       context: context,
       builder: (context) {
         return AlertDialog(
+          backgroundColor: Colors.white,
           title: Text("เพิ่มกลุ่มใหม่"),
           content: TextField( 
             controller: groupNameController,
@@ -43,6 +44,7 @@ class GroupDialog {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
+          backgroundColor: Colors.white,
           title: Text("ยืนยันการลบ"),
           content: Text("คุณแน่ใจหรือไม่ว่าต้องการลบกลุ่มนี้?"),
           actions: [
