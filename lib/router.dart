@@ -7,6 +7,6 @@ myRoutes(BuildContext context) {
   return {
     '/': (context) => LoginScreen(),
     '/home': (context) => HomeScreen(),
-    '/notilist': (context) => const Message()
+    '/notilist': (context) => Message()
   };
 }

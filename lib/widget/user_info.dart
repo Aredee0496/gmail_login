@@ -9,7 +9,7 @@ class UserInformation extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(
+      padding: EdgeInsets.only(
           top: 32.0, left: 16.0, right: 16.0, bottom: 16.0),
       child: Row(
         children: [

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
 class QRViewExample extends StatefulWidget {
-  const QRViewExample({Key? key}) : super(key: key);
+  QRViewExample({Key? key}) : super(key: key);
 
   @override
   State<QRViewExample> createState() => _QRViewExampleState();
@@ -16,7 +16,7 @@ class _QRViewExampleState extends State<QRViewExample> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           "QR Scanner",
           style: TextStyle(
             color: Colors.white,
@@ -27,12 +27,12 @@ class _QRViewExampleState extends State<QRViewExample> {
         centerTitle: true,
         backgroundColor: Colors.deepPurple,
         elevation: 0,
-        iconTheme: const IconThemeData(
+        iconTheme: IconThemeData(
           color: Colors.white,
         ),
       ),
       body: Container(
-        decoration: const BoxDecoration(color: Colors.deepPurple),
+        decoration: BoxDecoration(color: Colors.deepPurple),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
@@ -70,11 +70,11 @@ class _QRViewExampleState extends State<QRViewExample> {
               flex: 1,
               child: Center(
                 child: Padding(
-                  padding: const EdgeInsets.all(16.0),
+                  padding: EdgeInsets.all(16.0),
                   child: Text(
                     scannedData,
                     textAlign: TextAlign.center,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 20,
                       color: Colors.white,
                       fontWeight: FontWeight.bold,

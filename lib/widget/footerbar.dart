@@ -10,14 +10,14 @@ class FooterBar extends StatelessWidget {
   void _scanQRCode(BuildContext context) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => const DetailActivity()),
+      MaterialPageRoute(builder: (context) => DetailActivity()),
     );
   }
 
   void _openGenQRPage(BuildContext context) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => const GenQRPage()),
+      MaterialPageRoute(builder: (context) => GenQRPage()),
     );
   }
 
@@ -36,7 +36,7 @@ class FooterBar extends StatelessWidget {
           Positioned(
             left: 50,
             child: IconButton(
-              icon: const Icon(Icons.qr_code, color: Colors.deepPurple),
+              icon: Icon(Icons.qr_code, color: Colors.deepPurple),
               iconSize: 28,
               onPressed: () => _openGenQRPage(context),
             ),
@@ -54,11 +54,11 @@ class FooterBar extends StatelessWidget {
               child: Container(
                 width: 60,
                 height: 60,
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: Colors.deepPurple,
                 ),
-                child: const Center(
+                child: Center(
                   child: Icon(Icons.qr_code_scanner, color: Colors.white, size: 30),
                 ),
               ),
