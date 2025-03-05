@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gmail/widget/background.dart';
-import '../widget/detail.dart';
+import 'detail.dart';
 
 class ListScreen extends StatefulWidget {
   final String groupName;
@@ -62,12 +62,7 @@ class _ListScreenState extends State<ListScreen> {
         decoration: Background(),
         child: SafeArea(
           child: Padding(
-            padding: EdgeInsets.only(
-              top: 8,
-              left: 8,
-              right: 8,
-              bottom: 8,
-            ),
+            padding: EdgeInsets.all(8.0),
             child: Card(
               color: Colors.white,
               child: ListView.separated(

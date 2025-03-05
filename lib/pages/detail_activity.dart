@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gmail/widget/background.dart';
 
 class DetailActivity extends StatefulWidget {
   const DetailActivity({super.key});
@@ -12,63 +13,76 @@ class _DetailActivityState extends State<DetailActivity> {
 
   @override
   Widget build(BuildContext context) {
-
-    const activityData = 'Activity: วิ่งมาราธอน, Place: รอบโรงงาน, Start: 2025-02-28 08:00, End: 2025-02-28 12:00';
-
+    const activityData =
+        'Activity: วิ่งมาราธอน, Place: รอบโรงงาน, Start: 2025-02-28 08:00, End: 2025-02-28 12:00';
 
     final details = _parseActivityData(activityData);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('รายละเอียดกิจกรรม')),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Card(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-          elevation: 4,
+      extendBodyBehindAppBar: true,
+      appBar: AppBar(
+        title: Text("รายละเอียดกิจกรรม"),
+        centerTitle: true,
+        backgroundColor: Colors.transparent,
+        foregroundColor: Colors.white,
+        elevation: 0.0,
+      ),
+      body: Container(
+        decoration: Background(),
+        child: SafeArea(
           child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildDetailRow('ชื่อกิจกรรม', details['Activity'] ?? '-'),
-                _buildDetailRow('สถานที่', details['Place'] ?? '-'),
-                _buildDetailRow('เริ่มเวลา', details['Start'] ?? '-'),
-                _buildDetailRow('สิ้นสุดเวลา', details['End'] ?? '-'),
-                const SizedBox(height: 24),
-
-                if (status == null) ...[
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      _buildActionButton(
-                        context,
-                        'เข้าร่วม',
-                        Colors.green,
-                        'คุณได้เข้าร่วมกิจกรรมแล้ว',
-                        'เข้าร่วมแล้ว',
+            padding: EdgeInsets.all(8.0),
+            child: Card(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16)),
+              elevation: 4,
+              child: Padding(
+                padding: EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildDetailRow('ชื่อกิจกรรม', details['Activity'] ?? '-'),
+                    _buildDetailRow('สถานที่', details['Place'] ?? '-'),
+                    _buildDetailRow('เริ่มเวลา', details['Start'] ?? '-'),
+                    _buildDetailRow('สิ้นสุดเวลา', details['End'] ?? '-'),
+                    SizedBox(height: 24),
+                    if (status == null) ...[
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          _buildActionButton(
+                            context,
+                            'เข้าร่วม',
+                            Colors.green,
+                            'คุณได้เข้าร่วมกิจกรรมแล้ว',
+                            'เข้าร่วมแล้ว',
+                          ),
+                          _buildActionButton(
+                            context,
+                            'ปฏิเสธ',
+                            Colors.red,
+                            'คุณได้ปฏิเสธการเข้าร่วม',
+                            'ปฏิเสธแล้ว',
+                          ),
+                        ],
                       ),
-                      _buildActionButton(
-                        context,
-                        'ปฏิเสธ',
-                        Colors.red,
-                        'คุณได้ปฏิเสธการเข้าร่วม',
-                        'ปฏิเสธแล้ว',
+                    ] else ...[
+                      Center(
+                        child: Text(
+                          'สถานะ: $status',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: status == 'เข้าร่วมแล้ว'
+                                ? Colors.green
+                                : Colors.red,
+                          ),
+                        ),
                       ),
                     ],
-                  ),
-                ] else ...[
-                  Center(
-                    child: Text(
-                      'สถานะ: $status',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: status == 'เข้าร่วมแล้ว' ? Colors.green : Colors.red,
-                      ),
-                    ),
-                  ),
-                ],
-              ],
+                  ],
+                ),
+              ),
             ),
           ),
         ),
@@ -78,19 +92,20 @@ class _DetailActivityState extends State<DetailActivity> {
 
   Widget _buildDetailRow(String label, String value) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
+      padding: EdgeInsets.symmetric(vertical: 8),
       child: Row(
         children: [
-          const Icon(Icons.event_note, color: Colors.blue),
-          const SizedBox(width: 8),
-          Text('$label: ', style: const TextStyle(fontWeight: FontWeight.bold)),
+          Icon(Icons.event_note, color: Colors.blue),
+          SizedBox(width: 8),
+          Text('$label: ', style: TextStyle(fontWeight: FontWeight.bold)),
           Expanded(child: Text(value)),
         ],
       ),
     );
   }
 
-  Widget _buildActionButton(BuildContext context, String label, Color color, String message, String resultStatus) {
+  Widget _buildActionButton(BuildContext context, String label, Color color,
+      String message, String resultStatus) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
         backgroundColor: color,
@@ -100,11 +115,12 @@ class _DetailActivityState extends State<DetailActivity> {
       onPressed: () {
         _showResponseDialog(context, message, resultStatus);
       },
-      child: Text(label, style: const TextStyle(color: Colors.white)),
+      child: Text(label, style: TextStyle(color: Colors.white)),
     );
   }
 
-  void _showResponseDialog(BuildContext context, String message, String resultStatus) {
+  void _showResponseDialog(
+      BuildContext context, String message, String resultStatus) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -118,7 +134,7 @@ class _DetailActivityState extends State<DetailActivity> {
                 status = resultStatus;
               });
             },
-            child: const Text('ปิด'),
+            child: Text('ปิด'),
           ),
         ],
       ),

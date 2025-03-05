@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:gmail/pages/home.dart';
-import 'package:gmail/pages/list.dart';
 import 'package:gmail/pages/login_screen.dart';
 
 class AuthWrapper extends StatelessWidget {

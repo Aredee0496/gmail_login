@@ -28,7 +28,7 @@ class GroupButtonsWidget extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        const Padding(
+        Padding(
           padding: EdgeInsets.only(bottom: 4.0),
           child: Text(
             "Groups",
@@ -40,7 +40,7 @@ class GroupButtonsWidget extends StatelessWidget {
           ),
         ),
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10),
+          padding: EdgeInsets.symmetric(horizontal: 10),
           child: Wrap(
             spacing: 15,
             runSpacing: 15,
@@ -53,7 +53,7 @@ class GroupButtonsWidget extends StatelessWidget {
                 child: AnimatedContainer(
                   width: 150,
                   height: 180,
-                  duration: const Duration(milliseconds: 300),
+                  duration: Duration(milliseconds: 300),
                   curve: Curves.easeInOut,
                   decoration: BoxDecoration(
                     color: Colors.white,
@@ -62,7 +62,7 @@ class GroupButtonsWidget extends StatelessWidget {
                       BoxShadow(
                         color: Colors.black.withOpacity(0.2),
                         blurRadius: 8,
-                        offset: const Offset(2, 4),
+                        offset: Offset(2, 4),
                       )
                     ],
                   ),
@@ -73,7 +73,7 @@ class GroupButtonsWidget extends StatelessWidget {
                         child: FittedBox(
                           child: Text(
                             groupName,
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontWeight: FontWeight.bold,
                               color: Colors.deepPurple,
                               fontSize: 30,
@@ -89,7 +89,7 @@ class GroupButtonsWidget extends StatelessWidget {
                           left: 0,
                           right: 0,
                           child: Padding(
-                            padding: const EdgeInsets.all(8.0),
+                            padding: EdgeInsets.all(8.0),
                             child: MaterialButton(
                               onPressed: () => onGroupDelete(group["id"]),
                               color: Colors.red,
@@ -98,7 +98,7 @@ class GroupButtonsWidget extends StatelessWidget {
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(8),
                               ),
-                              child: const Text(
+                              child: Text(
                                 "ลบ",
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
@@ -113,7 +113,7 @@ class GroupButtonsWidget extends StatelessWidget {
                           left: 0,
                           right: 0,
                           child: Padding(
-                            padding: const EdgeInsets.all(8.0),
+                            padding: EdgeInsets.all(8.0),
                             child: MaterialButton(
                               onPressed: () => onSendSelectedGroups(groupName),
                               color: isSelected ? Colors.green : Colors.grey,
@@ -124,7 +124,7 @@ class GroupButtonsWidget extends StatelessWidget {
                               ),
                               child: Text(
                                 isSelected ? "เลือกแล้ว" : "เลือก",
-                                style: const TextStyle(
+                                style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
@@ -134,9 +134,9 @@ class GroupButtonsWidget extends StatelessWidget {
                       if (group["hasNotification"] == true)
                         Positioned(
                           right: -5,
-                          top: -5, 
+                          top: -5,
                           child: badges.Badge(
-                            badgeStyle: const badges.BadgeStyle(
+                            badgeStyle: badges.BadgeStyle(
                               badgeColor: Colors.red,
                               padding: EdgeInsets.all(10),
                             ),
